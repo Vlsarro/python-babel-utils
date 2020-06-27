@@ -10,7 +10,8 @@ class TestPoFilesToSpreadsheet(unittest.TestCase):
     def setUp(self):
         super(TestPoFilesToSpreadsheet, self).setUp()
         self.test_out_file_name = 'wb.xlsx'
-        self.test_out_file_path = os.path.join(TEST_DATA_PATH, self.test_out_file_name)
+        self.test_locales_dir_path = os.path.join(TEST_DATA_PATH, 'locales')
+        self.test_out_file_path = os.path.join(TEST_DATA_PATH, 'locales', self.test_out_file_name)
 
     def tearDown(self):
         super(TestPoFilesToSpreadsheet, self).tearDown()
@@ -20,7 +21,7 @@ class TestPoFilesToSpreadsheet(unittest.TestCase):
             pass
 
     def test_run(self):
-        wb = PoFilesToSpreadsheet.run(TEST_DATA_PATH, self.test_out_file_name)
+        wb = PoFilesToSpreadsheet.run(self.test_locales_dir_path, self.test_out_file_name)
 
         rows = list(wb.active.rows)
         self.assertEqual(6, len(rows))
