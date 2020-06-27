@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import errno
 import os
 import openpyxl
 
-from babel.messages.pofile import read_po
+from babel.messages.pofile import read_po, write_po
 
 from pybabel_utils import logger
+from pybabel_utils.catalog import UpdatableCatalog
+
+
+ENCODING = 'utf-8'
 
 
 def get_po_filenames(dir_path):
@@ -14,6 +19,10 @@ def get_po_filenames(dir_path):
         if f.endswith('.po'):
             filenames.append(os.path.join(dir_path, f))
     return filenames
+
+
+def get_po_filename_from_path(po_filepath):
+    return po_filepath.split(os.sep)[-1]
 
 
 class PoFilesToSpreadsheet(object):
@@ -30,7 +39,7 @@ class PoFilesToSpreadsheet(object):
 
         col += 1
         for name in po_filenames:
-            worksheet.cell(row, col, name.split(os.sep)[-1])
+            worksheet.cell(row, col, get_po_filename_from_path(name))
             col += 1
 
         return workbook, worksheet
@@ -71,4 +80,87 @@ class PoFilesToSpreadsheet(object):
 
 
 class PoFilesFromSpreadsheet(object):
-    pass
+
+    @staticmethod
+    def _get_column_index(row, po_file_short_name):
+        for cell in row:
+            if po_file_short_name in cell.value:
+                return cell.column
+            else:
+                logger.debug('Column [{}] doesn\'t have data for {}'.format(cell.value, po_file_short_name))
+        return None
+
+    @staticmethod
+    def _rollback_obsolete(catalog):
+        catalog._messages.update(catalog.obsolete)
+
+    @classmethod
+    def _update_po_files(cls, input_spreadsheet, po_filenames, output_dir, save):
+        updated_catalogs = []
+
+        if output_dir:
+            try:
+                os.makedirs(output_dir)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    output_dir = None
+
+        wb = openpyxl.load_workbook(input_spreadsheet, read_only=True)
+        ws = wb.active
+
+        first_row = ws[1]
+
+        for filename in po_filenames:
+            with open(filename) as f:
+                short_filename = get_po_filename_from_path(filename)
+                logger.debug('\n--------- Processing [{}] ---------\n'.format(short_filename))
+
+                col_index = cls._get_column_index(first_row, short_filename)
+                if col_index:
+                    catalog = read_po(f, charset=ENCODING, ignore_obsolete=False)
+                    new_catalog = cls._process_catalog(ws, catalog, col_index)
+
+                    updated_catalogs.append(new_catalog)
+
+                    if output_dir:
+                        file_args = (os.path.join(output_dir, short_filename), 'w+')
+                    else:
+                        file_args = (filename, 'w+')
+
+                    if save:
+                        with open(*file_args) as nf:
+                            write_po(nf, new_catalog, width=None, omit_header=True)
+
+        return updated_catalogs
+
+    @classmethod
+    def _process_catalog(cls, worksheet, catalog, column_idx):
+        new_catalog = UpdatableCatalog()
+        new_catalog.__dict__ = catalog.__dict__.copy()
+
+        # FIXME: commented messages are lost here
+
+        for row in worksheet.iter_rows(min_row=2):
+            if row:
+                msgid = row[0].value
+                msgstr = row[column_idx - 1].value
+                if msgid and msgstr:
+                    new_catalog.add(msgid, string=msgstr)
+                    logger.debug(u'\nMsgid: {}\nMsgstr: {}\nMsgid: {}\nMsgstr (catalog): {}\n'.format(
+                        msgid, msgstr, new_catalog[msgid], new_catalog[msgid].string)
+                    )
+
+        return new_catalog
+
+    @classmethod
+    def run(cls, input_spreadsheet, input_folder_name, output_dir=None, save=True):
+        po_filenames = get_po_filenames(input_folder_name)
+        if not po_filenames:
+            raise ValueError('No files were added. Please, try again.')
+
+        try:
+            updated_catalogs = cls._update_po_files(input_spreadsheet, po_filenames, output_dir, save)
+        except Exception as e:
+            logger.debug('Exception occurred while po files update > {!r}'.format(e), exc_info=True)
+        else:
+            return updated_catalogs
