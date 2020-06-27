@@ -1,0 +1,20 @@
+msgid "prj.info.lorem"
+msgstr "es:Lorem ipsum dolor sit amet"
+
+msgid "prj.info.ipsum"
+msgstr "es:consectetur adipiscing elit, sed do eiusmod"
+
+msgid "prj.info.dolor"
+msgstr "es:tempor incididunt ut labore et dolore magna aliqua"
+
+msgid "prj.info.sit"
+msgstr "es:Ut enim ad minim veniam"
+
+msgid "prj.info.amet"
+msgstr "es:quis nostrud exercitation ullamco laboris"
+
+# msgid "prj.info.omnis"
+# msgstr "es:is voluptas assumenda e"
+
+# msgid "prj.info.voluptatem"
+# msgstr "es:eos et accusamus et iusto odio dig"
