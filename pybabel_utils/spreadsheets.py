@@ -64,7 +64,7 @@ class PoFilesToSpreadsheet(object):
             row = 2
 
     @classmethod
-    def run(cls, input_folder_name, output_filename, include_commented_messages=False):
+    def run(cls, input_folder_name, output_filename, include_commented_messages=False, save=True):
         po_filenames = get_po_filenames(input_folder_name)
         if not po_filenames:
             raise ValueError('No files were added. Please, try again.')
@@ -72,7 +72,8 @@ class PoFilesToSpreadsheet(object):
         wb, ws = cls._init_po_workbook(po_filenames)
         try:
             cls._fill_po_worksheet(po_filenames, ws, include_commented_messages)
-            wb.save(filename=output_filename)
+            if save:
+                wb.save(filename=output_filename)
         except Exception as e:
             logger.debug('Exception occurred while worksheet processing > {!r}'.format(e))
 
