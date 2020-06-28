@@ -51,13 +51,26 @@ class TestPoFilesFromSpreadsheet(unittest.TestCase):
         self.assertEqual(6, len(en_catalog))
         self.assertEqual(2, len(en_catalog.obsolete))
 
+        self.assertEqual('en:Updated lorem', en_catalog.get('prj.info.lorem').string)
+        self.assertEqual('en:Updated ipsum', en_catalog.get('prj.info.ipsum').string)
+        self.assertEqual('en:Absolutely new phrase', en_catalog.get('prj.info.newmsgid').string)
+        self.assertEqual('en:Ut enim ad minim veniam', en_catalog.get('prj.info.sit').string)
+
         es_catalog = catalogs[1]
         self.assertEqual(6, len(es_catalog))
         self.assertEqual(2, len(es_catalog.obsolete))
+        self.assertEqual('es:Updated lorem', es_catalog.get('prj.info.lorem').string)
+        self.assertEqual('es:Updated ipsum', es_catalog.get('prj.info.ipsum').string)
+        self.assertEqual('es:Absolutely new phrase', es_catalog.get('prj.info.newmsgid').string)
+        self.assertEqual('es:Ut enim ad minim veniam', es_catalog.get('prj.info.sit').string)
 
         de_catalog = catalogs[2]
         self.assertEqual(6, len(de_catalog))
         self.assertEqual(2, len(de_catalog.obsolete))
+        self.assertEqual('de:Updated lorem', de_catalog.get('prj.info.lorem').string)
+        self.assertEqual('de:Updated ipsum', de_catalog.get('prj.info.ipsum').string)
+        self.assertEqual('de:Absolutely new phrase', de_catalog.get('prj.info.newmsgid').string)
+        self.assertEqual('de:Ut enim ad minim veniam', de_catalog.get('prj.info.sit').string)
 
 
 if __name__ == '__main__':
