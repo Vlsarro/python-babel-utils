@@ -124,7 +124,7 @@ class PoFilesFromSpreadsheet(object):
 
                 col_index = cls._get_column_index(first_row, short_filename)
                 if col_index:
-                    catalog = read_po(f, charset=ENCODING, ignore_obsolete=False)
+                    catalog = read_po(f, charset=ENCODING)
                     new_catalog = cls._process_catalog(ws, catalog, col_index)
 
                     updated_catalogs.append(new_catalog)
