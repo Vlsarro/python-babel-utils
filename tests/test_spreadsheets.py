@@ -29,6 +29,11 @@ class TestPoFilesToSpreadsheet(unittest.TestCase):
             self.assertTrue(r[2].value.startswith('es:'))
             self.assertTrue(r[3].value.startswith('de:'))
 
+        wb = PoFilesToSpreadsheet.run(self.test_locales_dir_path, self.test_out_file_name,
+                                      include_commented_messages=True, save=False)
+        rows = list(wb.active.rows)
+        self.assertEqual(8, len(rows))
+
 
 class TestPoFilesFromSpreadsheet(unittest.TestCase):
 
@@ -44,12 +49,15 @@ class TestPoFilesFromSpreadsheet(unittest.TestCase):
 
         en_catalog = catalogs[0]
         self.assertEqual(6, len(en_catalog))
+        self.assertEqual(2, len(en_catalog.obsolete))
 
         es_catalog = catalogs[1]
         self.assertEqual(6, len(es_catalog))
+        self.assertEqual(2, len(es_catalog.obsolete))
 
         de_catalog = catalogs[2]
         self.assertEqual(6, len(de_catalog))
+        self.assertEqual(2, len(de_catalog.obsolete))
 
 
 if __name__ == '__main__':

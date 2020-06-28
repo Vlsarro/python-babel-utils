@@ -4,6 +4,7 @@ import errno
 import os
 import openpyxl
 
+from babel.util import odict
 from babel.messages.pofile import read_po, write_po
 
 from pybabel_utils import logger
@@ -44,6 +45,11 @@ class PoFilesToSpreadsheet(object):
 
         return workbook, worksheet
 
+    @staticmethod
+    def _rollback_obsolete(catalog):
+        catalog._messages.update(catalog.obsolete)
+        catalog.obsolete = odict()
+
     @classmethod
     def _fill_po_worksheet(cls, po_filenames, worksheet, include_obsolete):
         col = 1
@@ -52,6 +58,10 @@ class PoFilesToSpreadsheet(object):
         for filename in po_filenames:
             with open(filename) as f:
                 cat = read_po(f, ignore_obsolete=not include_obsolete)
+
+                if include_obsolete:
+                    cls._rollback_obsolete(cat)
+
                 for msg in cat:
                     if msg.id != '':  # ignore header
                         if col == 1:
@@ -90,10 +100,6 @@ class PoFilesFromSpreadsheet(object):
             else:
                 logger.debug('Column [{}] doesn\'t have data for {}'.format(cell.value, po_file_short_name))
         return None
-
-    @staticmethod
-    def _rollback_obsolete(catalog):
-        catalog._messages.update(catalog.obsolete)
 
     @classmethod
     def _update_po_files(cls, input_spreadsheet, po_filenames, output_dir, save):
@@ -138,8 +144,6 @@ class PoFilesFromSpreadsheet(object):
     def _process_catalog(cls, worksheet, catalog, column_idx):
         new_catalog = UpdatableCatalog()
         new_catalog.__dict__ = catalog.__dict__.copy()
-
-        # FIXME: commented messages are lost here
 
         for row in worksheet.iter_rows(min_row=2):
             if row:
