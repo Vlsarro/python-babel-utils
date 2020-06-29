@@ -26,7 +26,7 @@ def get_po_filename_from_path(po_filepath):
     return po_filepath.split(os.sep)[-1]
 
 
-class PoFilesToSpreadsheet(object):
+class PoFilesSpreadsheetExporter(object):
 
     @classmethod
     def _init_po_workbook(cls, po_filenames):
@@ -90,7 +90,7 @@ class PoFilesToSpreadsheet(object):
         return wb
 
 
-class PoFilesFromSpreadsheet(object):
+class PoFilesSpreadsheetUpdater(object):
 
     @staticmethod
     def _get_column_index(row, po_file_short_name):

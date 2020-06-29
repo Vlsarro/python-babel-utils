@@ -1,19 +1,19 @@
 import os
 import unittest
 
-from pybabel_utils.spreadsheets import PoFilesToSpreadsheet, PoFilesFromSpreadsheet
+from pybabel_utils.spreadsheets import PoFilesSpreadsheetExporter, PoFilesSpreadsheetUpdater
 from tests import TEST_DATA_PATH
 
 
-class TestPoFilesToSpreadsheet(unittest.TestCase):
+class TestPoFilesSpreadsheetExporter(unittest.TestCase):
 
     def setUp(self):
-        super(TestPoFilesToSpreadsheet, self).setUp()
+        super(TestPoFilesSpreadsheetExporter, self).setUp()
         self.test_out_file_name = 'wb.xlsx'
         self.test_locales_dir_path = os.path.join(TEST_DATA_PATH, 'locales')
 
     def test_run(self):
-        wb = PoFilesToSpreadsheet.run(self.test_locales_dir_path, self.test_out_file_name, save=False)
+        wb = PoFilesSpreadsheetExporter.run(self.test_locales_dir_path, self.test_out_file_name, save=False)
 
         rows = list(wb.active.rows)
         self.assertEqual(6, len(rows))
@@ -29,21 +29,22 @@ class TestPoFilesToSpreadsheet(unittest.TestCase):
             self.assertTrue(r[2].value.startswith('es:'))
             self.assertTrue(r[3].value.startswith('de:'))
 
-        wb = PoFilesToSpreadsheet.run(self.test_locales_dir_path, self.test_out_file_name,
-                                      include_commented_messages=True, save=False)
+        wb = PoFilesSpreadsheetExporter.run(self.test_locales_dir_path, self.test_out_file_name,
+                                            include_commented_messages=True, save=False)
         rows = list(wb.active.rows)
         self.assertEqual(8, len(rows))
 
 
-class TestPoFilesFromSpreadsheet(unittest.TestCase):
+class TestPoFilesSpreadsheetUpdater(unittest.TestCase):
 
     def setUp(self):
-        super(TestPoFilesFromSpreadsheet, self).setUp()
+        super(TestPoFilesSpreadsheetUpdater, self).setUp()
         self.test_locales_dir_path = os.path.join(TEST_DATA_PATH, 'locales')
         self.test_input_spreadsheet_path = os.path.join(TEST_DATA_PATH, 'test_input_spreadsheet.xlsx')
 
     def test_run(self):
-        catalogs = PoFilesFromSpreadsheet.run(self.test_input_spreadsheet_path, self.test_locales_dir_path, save=False)
+        catalogs = PoFilesSpreadsheetUpdater.run(self.test_input_spreadsheet_path, self.test_locales_dir_path,
+                                                 save=False)
         self.assertIsInstance(catalogs, list)
         self.assertEqual(3, len(catalogs))
 

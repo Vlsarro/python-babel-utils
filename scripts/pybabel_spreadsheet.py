@@ -2,7 +2,7 @@ import argparse
 import sys
 import logging
 
-from pybabel_utils.spreadsheets import PoFilesToSpreadsheet, PoFilesFromSpreadsheet
+from pybabel_utils.spreadsheets import PoFilesSpreadsheetExporter, PoFilesSpreadsheetUpdater
 
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -33,9 +33,9 @@ def parse_args():
 if __name__ == '__main__':
     parser, run_args = parse_args()
     if run_args.subcommand == 'to_xlsx':
-        PoFilesToSpreadsheet.run(run_args.input_folder, run_args.output_file)
+        PoFilesSpreadsheetExporter.run(run_args.input_folder, run_args.output_file)
     elif run_args.subcommand == 'from_xlsx':
-        PoFilesFromSpreadsheet.run(run_args.input_spreadsheet, run_args.input_folder, run_args.output_dir)
+        PoFilesSpreadsheetUpdater.run(run_args.input_spreadsheet, run_args.input_folder, run_args.output_dir)
     else:
         parser.print_help()
         parser.exit()
