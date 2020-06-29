@@ -92,7 +92,7 @@ class PoFilesSpreadsheetExporter(object):
             if save:
                 wb.save(filename=output_filename)
         except Exception as e:
-            logger.debug('Exception occurred while worksheet processing > {!r}'.format(e))
+            logger.debug('Exception occurred while worksheet processing > {!r}'.format(e), exc_info=True)
 
         return wb
 
