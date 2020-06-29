@@ -3,7 +3,7 @@ from email import message_from_string
 from babel.messages.catalog import Catalog, Message, DEFAULT_HEADER
 from babel.util import distinct, odict
 
-from pybabel_utils import PY2, logger
+from pybabel_utils import PY2, logger, text_type
 
 try:
     import fuzzyset
@@ -113,7 +113,7 @@ class UniqueMessagesCatalog(Catalog):
             self._messages_strings.add(message.string)
             super(UniqueMessagesCatalog, self).__setitem__(id, message)
         else:
-            logger.debug('Message is not unique > {}'.format(unicode(message.string)))
+            logger.debug('Message is not unique > {}'.format(text_type(message.string)))
             self._repeatable_messages[id] = message.string
 
     def rollback_obsolete(self):
