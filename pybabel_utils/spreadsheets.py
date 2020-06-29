@@ -2,13 +2,17 @@
 
 import errno
 import os
-import openpyxl
 
 from babel.util import odict
 from babel.messages.pofile import read_po, write_po
 
 from pybabel_utils import logger
 from pybabel_utils.catalog import UpdatableCatalog
+
+try:
+    import openpyxl
+except ImportError:
+    openpyxl = None
 
 
 ENCODING = 'utf-8'
@@ -75,6 +79,9 @@ class PoFilesSpreadsheetExporter(object):
 
     @classmethod
     def run(cls, input_folder_name, output_filename, include_commented_messages=False, save=True):
+        if openpyxl is None:
+            raise ImportError('Please install "openpyxl" to use "PoFilesSpreadsheetExporter" class')
+
         po_filenames = get_po_filenames(input_folder_name)
         if not po_filenames:
             raise ValueError('No files were added. Please, try again.')
@@ -159,6 +166,9 @@ class PoFilesSpreadsheetUpdater(object):
 
     @classmethod
     def run(cls, input_spreadsheet, input_folder_name, output_dir=None, save=True):
+        if openpyxl is None:
+            raise ImportError('Please install "openpyxl" to use "PoFilesSpreadsheetUpdater" class')
+
         po_filenames = get_po_filenames(input_folder_name)
         if not po_filenames:
             raise ValueError('No files were added. Please, try again.')
