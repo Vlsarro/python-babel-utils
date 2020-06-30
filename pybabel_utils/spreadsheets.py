@@ -143,7 +143,7 @@ class PoFilesSpreadsheetUpdater(object):
 
                     if save:
                         with open(*file_args) as nf:
-                            write_po(nf, new_catalog, width=None, omit_header=True)
+                            write_po(nf, new_catalog, width=None)
 
         return updated_catalogs
 
