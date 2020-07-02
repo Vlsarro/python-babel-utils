@@ -40,11 +40,11 @@ class PoFilesSpreadsheetExporter(object):
 
         col = 1
         row = 1
-        worksheet.cell(row, col, 'msgid')
+        worksheet.cell(row=row, column=col, value='msgid')
 
         col += 1
         for name in po_filenames:
-            worksheet.cell(row, col, get_po_filename_from_path(name))
+            worksheet.cell(row=row, column=col, value=get_po_filename_from_path(name))
             col += 1
 
         return workbook, worksheet
@@ -69,10 +69,10 @@ class PoFilesSpreadsheetExporter(object):
                 for msg in cat:
                     if msg.id != '':  # ignore header
                         if col == 1:
-                            worksheet.cell(row, col, msg.id)
-                            worksheet.cell(row, col + 1, msg.string)
+                            worksheet.cell(row=row, column=col, value=msg.id)
+                            worksheet.cell(row=row, column=col + 1, value=msg.string)
                         else:
-                            worksheet.cell(row, col + 1, msg.string)
+                            worksheet.cell(row=row, column=col + 1, value=msg.string)
                         row += 1
             col += 1
             row = 2
