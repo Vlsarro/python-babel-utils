@@ -38,3 +38,9 @@ msgstr "de:quis nostrud exercitation ullamco laboris"
 
 #~ msgid "prj.info.voluptatem"
 #~ msgstr "de:eos et accusamus et iusto odio dig"
+
+#~ msgid "prj.info.empty_de"
+#~ msgstr ""
+
+#~ msgid "prj.info.empty_en"
+#~ msgstr "de:But not empty in de"

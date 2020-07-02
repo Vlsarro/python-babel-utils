@@ -32,7 +32,7 @@ class TestPoFilesSpreadsheetExporter(unittest.TestCase):
         wb = PoFilesSpreadsheetExporter.run(self.test_locales_dir_path, self.test_out_file_name,
                                             include_commented_messages=True, save=False)
         rows = list(wb.active.rows)
-        self.assertEqual(8, len(rows))
+        self.assertEqual(10, len(rows))
 
 
 class TestPoFilesSpreadsheetUpdater(unittest.TestCase):
